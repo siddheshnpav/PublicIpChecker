@@ -36,14 +36,14 @@ public class Utils {
 		}
 	}
 
-	public static void writeToLog(String a, String b) {
+	public static void writeToLog(String a) {
 
-		String logpath = String.format("C:\\ipchecker\\Logs\\%s_publicip.log", getLocalDateTime.date);
+		String logpath = String.format("C:\\ipchecker\\Logs\\%s_publicip.log", getLocalDateTime.date());
 
 		try {
 			FileWriter myWriter = new FileWriter(logpath, true);
 			BufferedWriter br = new BufferedWriter(myWriter);
-			br.write(a + " " + b + "\n");
+			br.write(getLocalDateTime.dateTime()+" 		"+ a + "\n");
 			br.close();
 			myWriter.close();
 		} catch (IOException e) {
