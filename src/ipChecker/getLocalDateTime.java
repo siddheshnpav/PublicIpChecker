@@ -31,5 +31,10 @@ public class getLocalDateTime {
 		return dateTime;
 
 	}
+	
+	public static String date() {
+		
+		return getLocalDate();
+	}
 
 }

@@ -42,20 +42,19 @@ public class CheckIP {
 
 		if (IPChecker.getPublicIP()==null) {
 
-			Utils.writeToLog(getLocalDateTime.dateTime(),"		" + "No Internet Connection Available..!");
+			Utils.writeToLog("No Internet Connection Available..!");
 		}
 
 		else if (getOldIp() != null && getOldIp().equals(IPChecker.getPublicIP())) {
 
-			Utils.writeToLog(getLocalDateTime.dateTime(),
-					"		" + "Ips are same" + " " + getOldIp() + " , " + IPChecker.getPublicIP());
+			Utils.writeToLog("Ips are same" + " " + getOldIp() + " , " + IPChecker.getPublicIP());
 		} else {
 
 			try {
 				FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
 				BufferedWriter br = new BufferedWriter(myWriter);
 				br.write(IPChecker.getPublicIP());
-				Utils.writeToLog(getLocalDateTime.dateTime(), "		" + "New IP Found : " + IPChecker.getPublicIP());
+				Utils.writeToLog("New IP Found : " + IPChecker.getPublicIP());
 				br.close();
 				myWriter.close();
 				TelegramAPIBot.sendTelegram(IPChecker.getPublicIP());
