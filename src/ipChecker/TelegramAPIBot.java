@@ -1,51 +1,48 @@
 package ipChecker;
 
+import java.io.BufferedReader;
 //import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Properties;
 //import java.util.Scanner;
 
 public class TelegramAPIBot {
 
 	public static void sendTelegram(String publicip) throws IOException {
+	String[] command = {
+		"curl",
+		"-s",
+		"-X",
+		"POST",
+		String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=New-Public-IP=%s",
+			getCredentials("token"),
+			getCredentials("userid"),
+			publicip)
+	};
 
-		String command = String.format(
-				"curl -X POST https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=New_Public_IP=%s",getCredentials("token"),getCredentials("userid"),
-				IPChecker.getPublicIP());
-		Process process = Runtime.getRuntime().exec(command);
-		process.getInputStream();
-	}
+	ProcessBuilder processBuilder = new ProcessBuilder(command);
+	Process process = processBuilder.start();
+
+    // Read response
+    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    StringBuilder response = new StringBuilder();
+    String line;
+    while ((line = reader.readLine()) != null) {
+        response.append(line);
+    }
+
+    String jsonResponse = response.toString();
+
+    if (jsonResponse.contains("\"ok\":true")) {
+	   Utils.writeToLog("Message sent successfully via Telegram Bot.");
+    } else {
+        Utils.writeToLog("Failed to send message via Telegram.");
+    }
+}
 	
-
-	/*private static String getToken() {
-
-		 String token = null;
-
-		File file = new File("C:\\Sidh\\ipchecker\\token.txt");
-
-		if (!file.exists()) {
-
-			System.out.println("Please provide token");
-			return null;
-
-		} else {
-
-			try {
-				Scanner sc = new Scanner(file);
-				while (sc.hasNext()) {
-
-					token = sc.next();
-				}
-				sc.close();
-				return token;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}*/
 	
 	public static String getCredentials(String a) {
 		
@@ -57,6 +54,7 @@ public class TelegramAPIBot {
 			fis = new FileInputStream("C:\\Sidh\\ipchecker\\credentials.txt");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			Utils.writeToLog("Credentials file not found.");
 		}
 
         try {
@@ -64,6 +62,7 @@ public class TelegramAPIBot {
 			return prop.getProperty(a);
 		} catch (IOException e) {
 			e.printStackTrace();
+			Utils.writeToLog("Error while fetching credentials from file.");
 			return null;
 		}
         

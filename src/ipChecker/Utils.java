@@ -10,21 +10,14 @@ import java.nio.file.Paths;
 
 public class Utils {
 
-	/*
-	 * public static void directoryCreator() {
-	 * 
-	 * File f = new File("C:\\ipchecker");
-	 * 
-	 * if (!f.exists()) {
-	 * 
-	 * f.mkdir(); }
-	 * 
-	 * }
-	 */
 
 	public static void directoryCreator() {
 
 		Path path = Paths.get("C:\\ipchecker\\Logs");
+
+		if(Files.exists(path)) {
+			return;
+		}
 
 		try {
 
@@ -38,7 +31,7 @@ public class Utils {
 
 	public static void writeToLog(String a) {
 
-		String logpath = String.format("C:\\ipchecker\\Logs\\%s_publicip.log", getLocalDateTime.date());
+		String logpath = String.format("C:\\ipchecker\\Logs\\%s.log", getLocalDateTime.date());
 
 		try {
 			FileWriter myWriter = new FileWriter(logpath, true);
@@ -46,6 +39,7 @@ public class Utils {
 			br.write(getLocalDateTime.dateTime()+" 		"+ a + "\n");
 			br.close();
 			myWriter.close();
+			System.out.println(getLocalDateTime.dateTime()+" 		"+ a + "\n");
 		} catch (IOException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -53,7 +47,7 @@ public class Utils {
 
 	}
 
-	public static void writeToTxt(String a) {
+	public static void writeToPublicipTxt(String a) {
 
 		try {
 			FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
@@ -62,38 +56,9 @@ public class Utils {
 			br.close();
 			myWriter.close();
 		} catch (IOException e) {
-			System.out.println("An error occurred.");
+			System.out.println("An error occurred while writing to publicip.txt.");
 			e.printStackTrace();
 		}
-
-	}
-
-	public static void txtFileCreator() {
-
-		File f = new File("c:\\ipchecker\\publicip.txt");
-
-		if (!f.exists()) {
-
-			try {
-				f.createNewFile();
-			} catch (IOException e) {
-
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public static boolean txtFileExist() {
-
-		directoryCreator();
-		File f = new File("c:\\ipchecker\\publicip.txt");
-
-		if (f.exists()) {
-
-			return true;
-		}
-
-		return false;
 
 	}
 

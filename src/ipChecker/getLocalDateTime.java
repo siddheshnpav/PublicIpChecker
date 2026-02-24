@@ -18,15 +18,13 @@ public class getLocalDateTime {
 
 	private static String getLocalTime() {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("KK:mm a", Locale.ENGLISH);
-		String time = LocalDateTime.now().format(formatter);
-		return time;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.ENGLISH);
+        return LocalDateTime.now().format(formatter);
 	}
 
 	public static String dateTime() {
 
 		String dateTime = getLocalDate() + " " + getLocalTime();
-		date = getLocalDate();
 
 		return dateTime;
 
@@ -34,7 +32,9 @@ public class getLocalDateTime {
 	
 	public static String date() {
 		
-		return getLocalDate();
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd");
+		LocalDateTime now = LocalDateTime.now();
+        return dtf.format(now);
 	}
 
 }

@@ -9,26 +9,27 @@ import java.net.URL;
 public class IPChecker {
 
 	public static String getPublicIP() {
-		
 
 		String publicIP = null;
 
-		try (java.util.Scanner s = new java.util.Scanner(new java.net.URL(TelegramAPIBot.getCredentials("ipcheckurl")).openStream(), "UTF-8")
+		try (java.util.Scanner s = new java.util.Scanner(
+				java.net.URI.create(TelegramAPIBot.getCredentials("ipcheckurl")).toURL().openStream(), "UTF-8")
 				.useDelimiter("\\A")) {
-			publicIP = s.next();
-			System.out.printf("Public Ip Found from Web : %s\n", publicIP);
-			//s.close();
-			return publicIP;
+			if (s.hasNext()) {
+				publicIP = s.next();
+			}
+
 		} catch (java.io.IOException e) {
-			System.out.println("Error while checking public IP");
+			Utils.writeToLog("Error while checking public IP");
 			return null;
 		}
-
+		Utils.writeToLog("Public Ip Found from Web : " + publicIP);
+		return publicIP;
 	}
 
 	public static StringBuffer getPublicIP2() throws IOException {
 
-		URL url = new URL("https://ipinfo.io/ip");
+		URL url = java.net.URI.create("https://ipinfo.io/ip").toURL();
 		HttpURLConnection urlcon = (HttpURLConnection) url.openConnection();
 		urlcon.setRequestMethod("GET");
 

@@ -26,43 +26,43 @@ public class CheckIP {
 				sc.close();
 				return oldip;
 			} catch (FileNotFoundException e) {
-				
 				e.printStackTrace();
+				return null;
 			}
-
+			
 		}
 		return null;
 	}
 
 	public static void checkandUpdateNewIP() {
-		
-		if (!Utils.txtFileExist()) {
-			Utils.txtFileCreator();
-		}
 
-		if (IPChecker.getPublicIP()==null) {
+		String publicIP = IPChecker.getPublicIP();
+
+		if (publicIP == null) {
 
 			Utils.writeToLog("No Internet Connection Available..!");
+			return;
 		}
 
-		else if (getOldIp() != null && getOldIp().equals(IPChecker.getPublicIP())) {
+		if (getOldIp() != null && getOldIp().equals(publicIP)) {
 
-			Utils.writeToLog("Ips are same" + " " + getOldIp() + " , " + IPChecker.getPublicIP());
-		} else {
+			Utils.writeToLog("Ips are same" + " " + getOldIp() + " , " + publicIP);
+			return;
+		}
 
-			try {
-				FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
-				BufferedWriter br = new BufferedWriter(myWriter);
-				br.write(IPChecker.getPublicIP());
-				Utils.writeToLog("New IP Found : " + IPChecker.getPublicIP());
-				br.close();
-				myWriter.close();
-				TelegramAPIBot.sendTelegram(IPChecker.getPublicIP());
-			} catch (IOException e) {
-				System.out.println("An error occurred while writing public ip.");
-				e.printStackTrace();
-			}
-
+		try {
+			FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
+			BufferedWriter br = new BufferedWriter(myWriter);
+			br.write(publicIP);
+			Utils.writeToLog("New IP Found : " + publicIP);
+			br.close();
+			myWriter.close();
+			TelegramAPIBot.sendTelegram(publicIP);
+			return;
+		} catch (IOException e) {
+			Utils.writeToLog("An error occurred while writing public ip.");
+			e.printStackTrace();
+			return;
 		}
 	}
 
