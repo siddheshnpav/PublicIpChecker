@@ -16,6 +16,22 @@ public class Utils {
 	private static String publicIpFilePath = "C:\\ipchecker\\publicip.txt";
 	private static String credentialsFilePath = "C:\\Sidh\\ipchecker\\credentials.txt";
 
+	public static String getDirectoryPath() {
+		return DirectoryPath;
+	}
+
+	public static String getLogDirectoryPath() {
+		return logDirectoryPath;
+	}
+
+	public static String getPublicIpFilePath() {
+		return publicIpFilePath;
+	}
+
+	public static String getCredentialsFilePath() {
+		return credentialsFilePath;
+	}
+
 	private static void CreateDirectoryIfNotExists(String directoryPath) {
 		Path path = Paths.get(directoryPath);
 		if (!Files.exists(path)) {

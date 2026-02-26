@@ -13,7 +13,7 @@ public class CheckOldandNewIP {
 
 		String oldip = null;
 
-		File f = new File("c:\\ipchecker\\publicip.txt");
+		File f = new File(Utils.getPublicIpFilePath());
 
 		if (f.exists()) {
 
@@ -51,7 +51,7 @@ public class CheckOldandNewIP {
 		}
 
 		try {
-			FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
+			FileWriter myWriter = new FileWriter(Utils.getPublicIpFilePath(), false);
 			BufferedWriter br = new BufferedWriter(myWriter);
 			br.write(publicIP);
 			Utils.writeToLog("New IP Found : " + publicIP);
