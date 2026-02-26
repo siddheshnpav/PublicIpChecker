@@ -1,71 +1,71 @@
 package ipChecker;
 
 import java.io.BufferedReader;
-//import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Properties;
-//import java.util.Scanner;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class TelegramAPIBot {
 
 	public static void sendTelegram(String publicip) throws IOException {
-	String[] command = {
-		"curl",
-		"-s",
-		"-X",
-		"POST",
-		String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=New-Public-IP=%s",
-			getCredentials("token"),
-			getCredentials("userid"),
-			publicip)
-	};
 
-	ProcessBuilder processBuilder = new ProcessBuilder(command);
-	Process process = processBuilder.start();
+		String message =TelegramAlertTemplate(publicip);
+		String encodedMessage = URLEncoder.encode(message, "UTF-8");
+		String[] command = {
+				"curl",
+				"-s",
+				"-X",
+				"POST",
+				String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=Markdown",
+						Utils.getCredentials("token"),
+						Utils.getCredentials("userid"),
+						encodedMessage)
+		};
 
-    // Read response
-    BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    StringBuilder response = new StringBuilder();
-    String line;
-    while ((line = reader.readLine()) != null) {
-        response.append(line);
-    }
+		ProcessBuilder processBuilder = new ProcessBuilder(command);
+		Process process = processBuilder.start();
 
-    String jsonResponse = response.toString();
-
-    if (jsonResponse.contains("\"ok\":true")) {
-	   Utils.writeToLog("Message sent successfully via Telegram Bot.");
-    } else {
-        Utils.writeToLog("Failed to send message via Telegram.");
-    }
-}
-	
-	
-	public static String getCredentials(String a) {
-		
-		Properties prop = new Properties();
-
-
-        FileInputStream fis = null;
-		try {
-			fis = new FileInputStream("C:\\Sidh\\ipchecker\\credentials.txt");
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			Utils.writeToLog("Credentials file not found.");
+		// Read response
+		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+		StringBuilder response = new StringBuilder();
+		String line;
+		while ((line = reader.readLine()) != null) {
+			response.append(line);
 		}
 
-        try {
-			prop.load(fis);
-			return prop.getProperty(a);
-		} catch (IOException e) {
-			e.printStackTrace();
-			Utils.writeToLog("Error while fetching credentials from file.");
-			return null;
+		String jsonResponse = response.toString();
+
+		if (jsonResponse.contains("\"ok\":true")) {
+			Utils.writeToLog("Message sent successfully via Telegram Bot.");
+		} else {
+			Utils.writeToLog("Failed to send message via Telegram.");
 		}
-        
 	}
+		public static void main(String[] args) throws IOException {
+			sendTelegram("202.32.32.32");
+		}
 
+		public static String TelegramAlertTemplate(String publicIp) {
+
+        String machine = SystemInfo.getMachineName();
+        String user = SystemInfo.getUsername();
+        String osName = SystemInfo.getOsName();
+        String timestamp = getLocalDateTime.dateTime();
+
+        return String.format(
+                "*PUBLIC IP CHANGE DETECTED*%n%n" +
+                "*New IP:* *%s*%n%n" +
+                "*PC Name:* %s%n" +
+                "*User:* %s%n" +
+                "*OS:* %s%n" +
+                "*Timestamp:* %s",
+                publicIp,
+                machine,
+                user,
+                osName,
+                timestamp
+                
+        );
+    }
 }

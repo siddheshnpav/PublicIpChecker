@@ -1,37 +1,38 @@
 package ipChecker;
 
 import java.io.BufferedWriter;
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class Utils {
 
+	private static String DirectoryPath = "C:\\ipchecker";
+	private static String logDirectoryPath = "C:\\ipchecker\\Logs";
+	private static String publicIpFilePath = "C:\\ipchecker\\publicip.txt";
+	private static String credentialsFilePath = "C:\\Sidh\\ipchecker\\credentials.txt";
 
-	public static void directoryCreator() {
-
-		Path path = Paths.get("C:\\ipchecker\\Logs");
-
-		if(Files.exists(path)) {
-			return;
-		}
-
-		try {
-
-			Files.createDirectories(path);
-		} catch (IOException e)
-
-		{
-			e.printStackTrace();
+	private static void CreateDirectoryIfNotExists(String directoryPath) {
+		Path path = Paths.get(directoryPath);
+		if (!Files.exists(path)) {
+			try {
+				Files.createDirectories(path);
+			} catch (IOException e) {
+				System.out.println("An error occurred while creating directory: " + directoryPath);
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public static void writeToLog(String a) {
+		CreateDirectoryIfNotExists(DirectoryPath);
+		CreateDirectoryIfNotExists(logDirectoryPath);
 
-		String logpath = String.format("C:\\ipchecker\\Logs\\%s.log", getLocalDateTime.date());
+		String logpath = String.format("%s\\%s.log", logDirectoryPath, getLocalDateTime.date());
 
 		try {
 			FileWriter myWriter = new FileWriter(logpath, true);
@@ -50,7 +51,7 @@ public class Utils {
 	public static void writeToPublicipTxt(String a) {
 
 		try {
-			FileWriter myWriter = new FileWriter("C:\\ipchecker\\publicip.txt", false);
+			FileWriter myWriter = new FileWriter(publicIpFilePath, false);
 			BufferedWriter br = new BufferedWriter(myWriter);
 			br.write(a);
 			br.close();
@@ -60,6 +61,29 @@ public class Utils {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static String getCredentials(String a) {
+		
+		Properties prop = new Properties();
+        FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(credentialsFilePath);
+			prop.load(fis);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Utils.writeToLog("Credentials file not found.");
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return prop.getProperty(a);
+        
 	}
 
 }

@@ -7,7 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class CheckIP {
+public class CheckOldandNewIP {
 
 	public static String getOldIp() {
 
@@ -36,7 +36,7 @@ public class CheckIP {
 
 	public static void checkandUpdateNewIP() {
 
-		String publicIP = IPChecker.getPublicIP();
+		String publicIP = CalculatePublicIP.getPublicIP();
 
 		if (publicIP == null) {
 
