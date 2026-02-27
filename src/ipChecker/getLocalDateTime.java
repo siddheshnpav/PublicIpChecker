@@ -6,14 +6,11 @@ import java.util.Locale;
 
 public class getLocalDateTime {
 
-	static String date = null;
-
 	private static String getLocalDate() {
 
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		LocalDateTime now = LocalDateTime.now();
-		String date = dtf.format(now);
-		return date;
+		return dtf.format(now);
 	}
 
 	private static String getLocalTime() {

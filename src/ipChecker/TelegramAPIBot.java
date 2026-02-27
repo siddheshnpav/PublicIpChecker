@@ -9,7 +9,7 @@ public class TelegramAPIBot {
 
 	public static void sendTelegram(String publicip) throws IOException {
 
-		String message =TelegramAlertTemplate(publicip);
+		String message = TelegramAlertTemplate(publicip);
 		String encodedMessage = URLEncoder.encode(message, "UTF-8");
 		String[] command = {
 				"curl",
@@ -43,26 +43,26 @@ public class TelegramAPIBot {
 		}
 	}
 
-		public static String TelegramAlertTemplate(String publicIp) {
+	public static String TelegramAlertTemplate(String publicIp) {
 
-        String machine = SystemInfo.getMachineName();
-        String user = SystemInfo.getUsername();
-        String osName = SystemInfo.getOsName();
-        String timestamp = getLocalDateTime.dateTime();
+		String machine = SystemInfo.getMachineName();
+		String user = SystemInfo.getUsername();
+		String osName = SystemInfo.getOsName();
+		String timestamp = getLocalDateTime.dateTime();
 
-        return String.format(
-                "*PUBLIC IP CHANGE DETECTED*%n%n" +
-                "*New IP:* *%s*%n%n" +
-                "*PC Name:* %s%n" +
-                "*User:* %s%n" +
-                "*OS:* %s%n" +
-                "*Timestamp:* %s",
-                publicIp,
-                machine,
-                user,
-                osName,
-                timestamp
-                
-        );
-    }
+		return String.format(
+				"*PUBLIC IP CHANGE DETECTED*%n%n" +
+						"*New IP:* *%s*%n%n" +
+						"*PC Name:* %s%n" +
+						"*User:* %s%n" +
+						"*OS:* %s%n" +
+						"*Timestamp:* %s",
+				publicIp,
+				machine,
+				user,
+				osName,
+				timestamp
+
+		);
+	}
 }

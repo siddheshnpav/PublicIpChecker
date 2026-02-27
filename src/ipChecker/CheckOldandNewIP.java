@@ -18,7 +18,7 @@ public static String getOldIp() {
     }
 
     try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        return reader.readLine();
+        return reader.readLine().trim();
     } catch (IOException e) {
         e.printStackTrace();
         return null;
@@ -27,18 +27,22 @@ public static String getOldIp() {
 
 	public static void checkandUpdateNewIP() {
 
-		String publicIP = CalculatePublicIP.getPublicIP();
+		String publicIP = FetchPublicIP.getPublicIP();
 		String oldIp = getOldIp();
 
 		if (publicIP == null) {
-
 			Utils.writeToLog("No Internet Connection Available..!");
 			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "No Internet Connection Available");
 			return;
 		}
 
-		if (oldIp != null && oldIp.equals(publicIP)) {
+		if(publicIP.equals("#InvalidIP#")) {
+			Utils.writeToLog("Received Invalid Public IP..!");
+			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "Received Invalid Public IP from IP Check Service");
+			return;
+		}
 
+		if (oldIp != null && oldIp.equals(publicIP)) {
 			Utils.writeToLog("Ips are same" + " " + oldIp + " , " + publicIP);
 			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "No IP Change Detected");
 			return;
