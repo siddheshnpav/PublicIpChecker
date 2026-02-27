@@ -1,52 +1,46 @@
 package ipChecker;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Scanner;
 
 public class CheckOldandNewIP {
 
-	public static String getOldIp() {
+public static String getOldIp() {
 
-		String oldip = null;
+    File file = new File(Utils.getPublicIpFilePath());
 
-		File f = new File(Utils.getPublicIpFilePath());
+    if (!file.exists()) {
+        return null;
+    }
 
-		if (f.exists()) {
-
-			try {
-				Scanner sc = new Scanner(f);
-				while (sc.hasNext()) {
-
-					oldip = sc.next();
-				}
-				sc.close();
-				return oldip;
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-				return null;
-			}
-			
-		}
-		return null;
-	}
+    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+        return reader.readLine();
+    } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+    }
+}
 
 	public static void checkandUpdateNewIP() {
 
 		String publicIP = CalculatePublicIP.getPublicIP();
+		String oldIp = getOldIp();
 
 		if (publicIP == null) {
 
 			Utils.writeToLog("No Internet Connection Available..!");
+			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "No Internet Connection Available");
 			return;
 		}
 
-		if (getOldIp() != null && getOldIp().equals(publicIP)) {
+		if (oldIp != null && oldIp.equals(publicIP)) {
 
-			Utils.writeToLog("Ips are same" + " " + getOldIp() + " , " + publicIP);
+			Utils.writeToLog("Ips are same" + " " + oldIp + " , " + publicIP);
+			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "No IP Change Detected");
 			return;
 		}
 
@@ -58,11 +52,13 @@ public class CheckOldandNewIP {
 			br.close();
 			myWriter.close();
 			TelegramAPIBot.sendTelegram(publicIP);
-			return;
+			Utils.UpdateIPCheckerStatusINI("lastUpdatedIP", publicIP);
+			Utils.UpdateIPCheckerStatusINI("lastIPUpdatedDateTime", getLocalDateTime.dateTime());
+			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "IP Change Detected and Telegram Alert Sent");
+			
 		} catch (IOException e) {
 			Utils.writeToLog("An error occurred while writing public ip.");
 			e.printStackTrace();
-			return;
 		}
 	}
 

@@ -1,7 +1,9 @@
 package ipChecker;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,6 +17,7 @@ public class Utils {
 	private static String logDirectoryPath = "C:\\ipchecker\\Logs";
 	private static String publicIpFilePath = "C:\\ipchecker\\publicip.txt";
 	private static String credentialsFilePath = "C:\\Sidh\\ipchecker\\credentials.txt";
+	private static String IPCheckerStatusFilePath = "C:\\ipchecker\\IPCheckerStatus.ini";
 
 	public static String getDirectoryPath() {
 		return DirectoryPath;
@@ -53,10 +56,14 @@ public class Utils {
 		try {
 			FileWriter myWriter = new FileWriter(logpath, true);
 			BufferedWriter br = new BufferedWriter(myWriter);
-			br.write(getLocalDateTime.dateTime()+" 		"+ a + "\n");
+			if (a.startsWith("Starting IP Checker")) {
+				br.write("\n" + getLocalDateTime.dateTime() + " 		" + a + "\n");
+			}else{
+				br.write(getLocalDateTime.dateTime() + " 		" + a + "\n");
+			}
 			br.close();
 			myWriter.close();
-			System.out.println(getLocalDateTime.dateTime()+" 		"+ a + "\n");
+			System.out.println(getLocalDateTime.dateTime() + " 		" + a + "\n");
 		} catch (IOException e) {
 			System.out.println("An error occurred.");
 			e.printStackTrace();
@@ -79,10 +86,35 @@ public class Utils {
 
 	}
 
-	public static String getCredentials(String a) {
-		
+	public static synchronized void UpdateIPCheckerStatusINI(String key, String value) {
+
 		Properties prop = new Properties();
-        FileInputStream fis = null;
+		File file = new File(IPCheckerStatusFilePath);
+
+		if (file.exists()) {
+			try (FileInputStream fis = new FileInputStream(file)) {
+				prop.load(fis);
+			} catch (IOException e) {
+				System.out.println("Error loading IPCheckerStatus.ini");
+				e.printStackTrace();
+				return; 
+			}
+		}
+
+		prop.setProperty(key, value);
+
+		try (FileOutputStream fos = new FileOutputStream(file)) {
+			prop.store(fos, "Public IP Checker");
+		} catch (IOException e) {
+			System.out.println("Error writing to IPCheckerStatus.ini");
+			e.printStackTrace();
+		}
+	}
+
+	public static String getCredentials(String a) {
+
+		Properties prop = new Properties();
+		FileInputStream fis = null;
 		try {
 			fis = new FileInputStream(credentialsFilePath);
 			prop.load(fis);
@@ -99,7 +131,7 @@ public class Utils {
 			}
 		}
 		return prop.getProperty(a);
-        
+
 	}
 
 }

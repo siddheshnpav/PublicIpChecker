@@ -18,7 +18,7 @@ public class getLocalDateTime {
 
 	private static String getLocalTime() {
 
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm:ss a", Locale.ENGLISH);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh-mm-ss a", Locale.ENGLISH);
         return LocalDateTime.now().format(formatter);
 	}
 

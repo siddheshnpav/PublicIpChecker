@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class TelegramAPIBot {
 
@@ -38,13 +37,11 @@ public class TelegramAPIBot {
 
 		if (jsonResponse.contains("\"ok\":true")) {
 			Utils.writeToLog("Message sent successfully via Telegram Bot.");
+			Utils.UpdateIPCheckerStatusINI("LastSuccessTelegramPost", getLocalDateTime.dateTime());
 		} else {
 			Utils.writeToLog("Failed to send message via Telegram.");
 		}
 	}
-		public static void main(String[] args) throws IOException {
-			sendTelegram("202.32.32.32");
-		}
 
 		public static String TelegramAlertTemplate(String publicIp) {
 
