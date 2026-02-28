@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class TelegramAPIBot {
 
 	public static void sendTelegram(String publicip) throws IOException {
 
-		String message =TelegramAlertTemplate(publicip);
+		String message = TelegramAlertTemplate(publicip);
 		String encodedMessage = URLEncoder.encode(message, "UTF-8");
 		String[] command = {
 				"curl",
@@ -38,34 +37,32 @@ public class TelegramAPIBot {
 
 		if (jsonResponse.contains("\"ok\":true")) {
 			Utils.writeToLog("Message sent successfully via Telegram Bot.");
+			Utils.UpdateIPCheckerStatusINI("LastSuccessTelegramPost", getLocalDateTime.dateTime());
 		} else {
 			Utils.writeToLog("Failed to send message via Telegram.");
 		}
 	}
-		public static void main(String[] args) throws IOException {
-			sendTelegram("202.32.32.32");
-		}
 
-		public static String TelegramAlertTemplate(String publicIp) {
+	public static String TelegramAlertTemplate(String publicIp) {
 
-        String machine = SystemInfo.getMachineName();
-        String user = SystemInfo.getUsername();
-        String osName = SystemInfo.getOsName();
-        String timestamp = getLocalDateTime.dateTime();
+		String machine = SystemInfo.getMachineName();
+		String user = SystemInfo.getUsername();
+		String osName = SystemInfo.getOsName();
+		String timestamp = getLocalDateTime.dateTime();
 
-        return String.format(
-                "*PUBLIC IP CHANGE DETECTED*%n%n" +
-                "*New IP:* *%s*%n%n" +
-                "*PC Name:* %s%n" +
-                "*User:* %s%n" +
-                "*OS:* %s%n" +
-                "*Timestamp:* %s",
-                publicIp,
-                machine,
-                user,
-                osName,
-                timestamp
-                
-        );
-    }
+		return String.format(
+				"*PUBLIC IP CHANGE DETECTED*%n%n" +
+						"*New IP:* *%s*%n%n" +
+						"*PC Name:* %s%n" +
+						"*User:* %s%n" +
+						"*OS:* %s%n" +
+						"*Timestamp:* %s",
+				publicIp,
+				machine,
+				user,
+				osName,
+				timestamp
+
+		);
+	}
 }
