@@ -7,6 +7,12 @@ public class FetchPublicIP {
 		String publicIP = null;
 		String ipCheckUrl = Utils.getCredentials("ipcheckurl");
 
+		if (ipCheckUrl == null || ipCheckUrl.isEmpty()) {
+			Utils.writeToLog("IP Check URL is not configured properly..!");
+			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "IP Check URL is not configured properly");
+			return "ipcheckurlnotconfigured";
+		}
+
 		try (java.util.Scanner s = new java.util.Scanner(
 				java.net.URI.create(ipCheckUrl).toURL().openStream(), "UTF-8")
 				.useDelimiter("\\A")) {

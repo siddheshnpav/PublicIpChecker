@@ -58,7 +58,7 @@ public class Utils {
 			BufferedWriter br = new BufferedWriter(myWriter);
 			if (a.startsWith("Starting IP Checker")) {
 				br.write("\n" + getLocalDateTime.dateTime() + " 		" + a + "\n");
-			}else{
+			} else {
 				br.write(getLocalDateTime.dateTime() + " 		" + a + "\n");
 			}
 			br.close();
@@ -97,7 +97,7 @@ public class Utils {
 			} catch (IOException e) {
 				System.out.println("Error loading IPCheckerStatus.ini");
 				e.printStackTrace();
-				return; 
+				return;
 			}
 		}
 
@@ -115,23 +115,32 @@ public class Utils {
 
 		Properties prop = new Properties();
 		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(credentialsFilePath);
-			prop.load(fis);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Utils.writeToLog("Credentials file not found.");
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+
+		File file = new File(credentialsFilePath);
+
+		if (file.exists()) {
+			try {
+				fis = new FileInputStream(credentialsFilePath);
+				prop.load(fis);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (fis != null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+			return prop.getProperty(a);
+
+		} else {
+
+			Utils.writeToLog("Credential File not found");
+			return null;
+
 		}
-		return prop.getProperty(a);
-
 	}
-
 }

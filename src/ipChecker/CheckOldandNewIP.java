@@ -9,26 +9,30 @@ import java.io.IOException;
 
 public class CheckOldandNewIP {
 
-public static String getOldIp() {
+	public static String getOldIp() {
 
-    File file = new File(Utils.getPublicIpFilePath());
+		File file = new File(Utils.getPublicIpFilePath());
 
-    if (!file.exists()) {
-        return null;
-    }
+		if (!file.exists()) {
+			return null;
+		}
 
-    try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-        return reader.readLine().trim();
-    } catch (IOException e) {
-        e.printStackTrace();
-        return null;
-    }
-}
+		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+			return reader.readLine().trim();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public static void checkandUpdateNewIP() {
 
 		String publicIP = FetchPublicIP.getPublicIP();
 		String oldIp = getOldIp();
+
+		if (publicIP != null && publicIP.equals("ipcheckurlnotconfigured")) {
+			return;
+		}
 
 		if (publicIP == null) {
 			Utils.writeToLog("No Internet Connection Available..!");
@@ -36,7 +40,7 @@ public static String getOldIp() {
 			return;
 		}
 
-		if(publicIP.equals("#InvalidIP#")) {
+		if (publicIP.equals("#InvalidIP#")) {
 			Utils.writeToLog("Received Invalid Public IP..!");
 			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "Received Invalid Public IP from IP Check Service");
 			return;
@@ -59,7 +63,7 @@ public static String getOldIp() {
 			Utils.UpdateIPCheckerStatusINI("lastUpdatedIP", publicIP);
 			Utils.UpdateIPCheckerStatusINI("lastIPUpdatedDateTime", getLocalDateTime.dateTime());
 			Utils.UpdateIPCheckerStatusINI("LastRunStatus", "IP Change Detected and Telegram Alert Sent");
-			
+
 		} catch (IOException e) {
 			Utils.writeToLog("An error occurred while writing public ip.");
 			e.printStackTrace();
