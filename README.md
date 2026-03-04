@@ -8,11 +8,13 @@ It compares the current public IP with the previously stored IP and notifies the
 
 ## 🚀 Features
 
-- ✅ Automatic Public IP Detection  
-- ✅ IP Change Comparison  
-- ✅ Log File Maintenance  
-- ✅ Telegram Notification via Bot API  
-- ✅ Lightweight and Easy to Configure  
+✅ Automatic Public IP Detection
+✅ Detects Public IP Changes
+✅ Telegram Notification via Bot API
+✅ Lightweight and Fast
+✅ Simple Configuration using .ini file
+✅ Secure Credential Storage using Encryption
+✅ Log File Maintenance
 
 ---
 
@@ -43,17 +45,58 @@ It compares the current public IP with the previously stored IP and notifies the
 
 ---
 
----
-
 ## 🔑 Configuration
 
-1. Create a Telegram Bot using **@BotFather**.
-2. Get your:
-   - `BOT_TOKEN`
-   - `CHAT_ID`
-3. Add them inside your application configuration.
+### 1️⃣ Create a Telegram Bot
+
+Create a Telegram bot using **@BotFather** in Telegram.
+
+After creating the bot you will receive:
+
+* `BOT_TOKEN`
+
+---
+
+### 2️⃣ Get Your Chat ID
+
+Send a message to your bot and obtain your **CHAT_ID** using a Telegram update API or bot tools.
+
+---
+
+### 3️⃣ Encrypt Credentials
+
+For security reasons, **BOT_TOKEN** and **CHAT_ID** must be encrypted before adding them to the configuration file.
+
+Use the **CryptoUtil** helper methods provided in the project.
 
 Example:
+
 ```java
-String botToken = "YOUR_BOT_TOKEN";
-String chatId = "YOUR_CHAT_ID";
+String encryptedToken = CryptoUtil.encrypt("YOUR_BOT_TOKEN");
+String encryptedChatId = CryptoUtil.encrypt("YOUR_CHAT_ID");
+```
+
+---
+
+### 4️⃣ Update Configuration File
+
+Replace the values inside **`IpCheckConfig.ini`** with the encrypted values.
+
+Example:
+
+```
+token=ENCRYPTED_BOT_TOKEN
+userid=ENCRYPTED_CHAT_ID
+```
+
+---
+
+### 5️⃣ Runtime Decryption
+
+The application automatically decrypts the credentials during runtime using:
+
+```java
+CryptoUtil.decrypt()
+```
+
+This ensures sensitive information is **not stored in plain text**.
