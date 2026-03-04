@@ -7,7 +7,10 @@ import java.net.URLEncoder;
 
 public class TelegramAPIBot {
 
-	public static void sendTelegram(String publicip) throws IOException {
+	public static void sendTelegramAlert(String publicip) throws IOException {
+
+		String token = CryptoUtil.EncyptDecryptString(Utils.getCredentials("token"));
+		String userId = CryptoUtil.EncyptDecryptString(Utils.getCredentials("userid"));
 
 		String message = TelegramAlertTemplate(publicip);
 		String encodedMessage = URLEncoder.encode(message, "UTF-8");
@@ -17,8 +20,8 @@ public class TelegramAPIBot {
 				"-X",
 				"POST",
 				String.format("https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s&parse_mode=Markdown",
-						Utils.getCredentials("token"),
-						Utils.getCredentials("userid"),
+						token,
+						userId,
 						encodedMessage)
 		};
 
@@ -38,8 +41,10 @@ public class TelegramAPIBot {
 		if (jsonResponse.contains("\"ok\":true")) {
 			Utils.writeToLog("Message sent successfully via Telegram Bot.");
 			Utils.UpdateIPCheckerStatusINI("LastSuccessTelegramPost", getLocalDateTime.dateTime());
+			Utils.UpdateIPCheckerStatusINI("isSuccessTelegramPost", "TRUE");
 		} else {
 			Utils.writeToLog("Failed to send message via Telegram.");
+			Utils.UpdateIPCheckerStatusINI("isSuccessTelegramPost", "FALSE");
 		}
 	}
 
