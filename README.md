@@ -9,11 +9,17 @@ It compares the current public IP with the previously stored IP and notifies the
 ## 🚀 Features
 
 ✅ Automatic Public IP Detection
+
 ✅ Detects Public IP Changes
+
 ✅ Telegram Notification via Bot API
+
 ✅ Lightweight and Fast
+
 ✅ Simple Configuration using .ini file
+
 ✅ Secure Credential Storage using Encryption
+
 ✅ Log File Maintenance
 
 ---
