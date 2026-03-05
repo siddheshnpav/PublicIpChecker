@@ -13,11 +13,11 @@ import java.util.Properties;
 
 public class Utils {
 
-	private static String DirectoryPath = "C:\\ipchecker";
-	private static String logDirectoryPath = "C:\\ipchecker\\Logs";
-	private static String publicIpFilePath = "C:\\ipchecker\\publicip.txt";
-	private static String credentialsFilePath = "C:\\Sidh\\ipchecker\\credentials.txt";
-	private static String IPCheckerStatusFilePath = "C:\\ipchecker\\IPCheckerStatus.ini";
+	private static String DirectoryPath = System.getenv("ProgramData")+"\\IpChecker";
+	private static String logDirectoryPath = System.getenv("ProgramData")+"\\IpChecker\\Logs";
+	private static String publicIpFilePath = DirectoryPath+"\\publicip.txt";
+	private static String IpCheckConfigINIFilePath = "C:\\Sidh\\IpChecker\\IpCheckConfig.ini";
+	private static String IPCheckerStatusFilePath = DirectoryPath+"\\IPCheckerStatus.ini";
 
 	public static String getDirectoryPath() {
 		return DirectoryPath;
@@ -31,8 +31,8 @@ public class Utils {
 		return publicIpFilePath;
 	}
 
-	public static String getCredentialsFilePath() {
-		return credentialsFilePath;
+	public static String getIpCheckConfigINIFilePath() {
+		return IpCheckConfigINIFilePath;
 	}
 
 	private static void CreateDirectoryIfNotExists(String directoryPath) {
@@ -48,7 +48,6 @@ public class Utils {
 	}
 
 	public static void writeToLog(String a) {
-		CreateDirectoryIfNotExists(DirectoryPath);
 		CreateDirectoryIfNotExists(logDirectoryPath);
 
 		String logpath = String.format("%s\\%s.log", logDirectoryPath, getLocalDateTime.date());
@@ -111,16 +110,48 @@ public class Utils {
 		}
 	}
 
+	public static String getIPCheckerStatus(String key) {
+
+		Properties prop = new Properties();
+		FileInputStream fis = null;
+
+		File file = new File(IPCheckerStatusFilePath);
+
+		if (file.exists()) {
+			try {
+				fis = new FileInputStream(file);
+				prop.load(fis);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				if (fis != null) {
+					try {
+						fis.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			return prop.getProperty(key);
+
+		} else {
+
+			Utils.writeToLog("IPCheckerStatus.ini File not found. " + IPCheckerStatusFilePath);
+			return null;
+		}
+	}
+
 	public static String getCredentials(String a) {
 
 		Properties prop = new Properties();
 		FileInputStream fis = null;
 
-		File file = new File(credentialsFilePath);
+		File file = new File(IpCheckConfigINIFilePath);
 
 		if (file.exists()) {
 			try {
-				fis = new FileInputStream(credentialsFilePath);
+				fis = new FileInputStream(file);
 				prop.load(fis);
 
 			} catch (Exception e) {
@@ -138,7 +169,7 @@ public class Utils {
 
 		} else {
 
-			Utils.writeToLog("Credential File not found");
+			Utils.writeToLog("IpCheckConfig.ini File not found. " + IPCheckerStatusFilePath);
 			return null;
 
 		}
