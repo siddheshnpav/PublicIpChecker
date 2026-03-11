@@ -13,11 +13,11 @@ import java.util.Properties;
 
 public class Utils {
 
-	private static String DirectoryPath = System.getenv("ProgramData")+"\\IpChecker";
-	private static String logDirectoryPath = System.getenv("ProgramData")+"\\IpChecker\\Logs";
-	private static String publicIpFilePath = DirectoryPath+"\\publicip.txt";
+	private static String DirectoryPath = System.getenv("ProgramData") + "\\IpChecker";
+	private static String logDirectoryPath = System.getenv("ProgramData") + "\\IpChecker\\Logs";
+	private static String publicIpFilePath = DirectoryPath + "\\publicip.txt";
 	private static String IpCheckConfigINIFilePath = "C:\\Sidh\\IpChecker\\IpCheckConfig.ini";
-	private static String IPCheckerStatusFilePath = DirectoryPath+"\\IPCheckerStatus.ini";
+	private static String IPCheckerStatusFilePath = DirectoryPath + "\\IPCheckerStatus.ini";
 
 	public static String getDirectoryPath() {
 		return DirectoryPath;
@@ -142,7 +142,7 @@ public class Utils {
 		}
 	}
 
-	public static String getCredentials(String a) {
+	public static Properties getCredentials() {
 
 		Properties prop = new Properties();
 		FileInputStream fis = null;
@@ -165,13 +165,12 @@ public class Utils {
 					}
 				}
 			}
-			return prop.getProperty(a);
+			return prop;
 
 		} else {
 
-			Utils.writeToLog("IpCheckConfig.ini File not found. " + IPCheckerStatusFilePath);
+			Utils.writeToLog("IpCheckConfig.ini File not found. " + IpCheckConfigINIFilePath);
 			return null;
-
 		}
 	}
 }

@@ -4,13 +4,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URLEncoder;
+import java.util.Properties;
 
 public class TelegramAPIBot {
 
+	static Properties credentials = Utils.getCredentials();
+
 	public static void sendTelegramAlert(String publicip) throws IOException {
 
-		String token = CryptoUtil.EncyptDecryptString(Utils.getCredentials("token"));
-		String userId = CryptoUtil.EncyptDecryptString(Utils.getCredentials("userid"));
+		String token = CryptoUtil.EncyptDecryptString(credentials.getProperty("token"));
+		String userId = CryptoUtil.EncyptDecryptString(credentials.getProperty("userid"));
 
 		String message = TelegramAlertTemplate(publicip);
 		String encodedMessage = URLEncoder.encode(message, "UTF-8");
